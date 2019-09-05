@@ -1,39 +1,55 @@
 import os
 import shutil
 import datetime
-
-cmd = input('>>>> ')
-
-# timestamp = datetime.datetime.today().strftime("%Y%m%d_%H_%M_%S")
-
-# path_save_folder = r"D:\Python\Temp\runic games\torchlight 2\save"
-# path_finish_folder = os.getcwd() + "\\" + timestamp
-
-# shutil.copytree(path_save_folder, path_finish_folder)
-#
-# print(os.listdir(path_finish_folder))
-path_save_folder = r'D:\Python\Temp\runic games\torchlight 2\save'
+import sys
 
 
 
-def copy_save(path_start):
+path_save_folder = r'C:\Users\TOSHIBA\Documents\my games\runic games\torchlight 2\save'
+
+try:
+    folder_name = os.listdir(path_save_folder)[0]
+    print('folder name: ', folder_name)
+except IndexError:
+    print('Ошибка! Папка с сохранением не найдена!')
+    sys.exit(1)
+
+cmd = input('>>>>')
+
+
+def copy_save(path_original_dir):
 
     timestamp = datetime.datetime.today().strftime("%Y%m%d_%H_%M_%S")
     path_finish_folder = os.path.join(os.getcwd(), 'temp', timestamp)
-    print(os.listdir(os.path.join(os.getcwd(), 'temp')))
-    shutil.copytree(path_start, path_finish_folder)
+    # print(os.listdir(os.path.join(os.getcwd(), 'temp')))
+    shutil.copytree(path_original_dir, path_finish_folder)
     return print('Done!')
 
-def back_save():
+def back_save(path_original_dir):
+    last_dir = os.listdir(os.path.join(os.getcwd(), 'temp', ))[-1]
 
+    # удаление исходной папки с файлами сохранения игры
+    try:
+        shutil.rmtree(os.path.join(path_original_dir, folder_name))
+    except:
+        print('Ошибка удаления каталога!')
+
+    # копируем папку со старым сохраннием обратно в папку save
+    try:
+        shutil.copytree(os.path.join(os.getcwd(), 'temp', last_dir, folder_name), os.path.join(path_original_dir, folder_name))
+    except:
+        print('Ошибка копирования каталога!')
+
+    return
 
 
 
 if cmd == 'save' :
     copy_save(path_save_folder)
-    # print(os.listdir(os.getcwd() + os.path.join('\temp')))
+
 elif cmd == 'back' :
-    print('back')
+    back_save(path_save_folder)
+
 else:
     print('error')
 
